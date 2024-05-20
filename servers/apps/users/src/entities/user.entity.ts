@@ -28,7 +28,7 @@ export class User {
   password: string
 
   @Field(() => Avatars, { nullable: true })
-  avatar: Avatars | null
+  avatar?: Avatars | null
 
   @Field()
   createdAt: Date

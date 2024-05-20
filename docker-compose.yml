@@ -1,0 +1,77 @@
+version: "3.8"
+
+services:
+  mongo-primary:
+    image: mongo:latest
+    hostname: mongo-primary
+    container_name: mongo-primary
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    expose:
+      - "27018"
+    ports:
+      - "27018:27018"
+    extra_hosts:
+      - "localhost:0.0.0.0"
+    command: "--port 27018 --keyFile /etc/mongodb/keyfile --replSet rs0"
+    volumes:
+      - ./rs_keyfile:/etc/mongodb/keyfile
+      - "mongo_primary_data:/data/db"
+      - "mongo_primary_config:/data/configdb"
+    networks:
+      mongo-cluster:
+
+  mongo-secondary:
+    image: mongo:latest
+    hostname: mongo-secondary
+    container_name: mongo-secondary
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    expose:
+      - "27019"
+    ports:
+      - "27019:27019"
+    command: "--port 27019 --keyFile /etc/mongodb/keyfile --replSet rs0"
+    volumes:
+      - ./rs_keyfile:/etc/mongodb/keyfile
+      - "mongo_secondary_data:/data/db"
+      - "mongo_secondary_config:/data/configdb"
+    networks:
+      mongo-cluster:
+
+  mongo-arbiter:
+    image: mongo:latest
+    hostname: mongo-arbiter
+    container_name: mongo-arbiter
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    expose:
+      - "27020"
+    ports:
+      - "27020:27020"
+    command: "--port 27020 --keyFile /etc/mongodb/keyfile --replSet rs0"
+    volumes:
+      - ./rs_keyfile:/etc/mongodb/keyfile
+      - "mongo_arbiter_data:/data/db"
+      - "mongo_arbiter_config:/data/configdb"
+    networks:
+      mongo-cluster:
+
+
+volumes:
+  mongo_primary_data:
+  mongo_primary_config:
+  mongo_secondary_data:
+  mongo_secondary_config:
+  mongo_arbiter_data:
+  mongo_arbiter_config:
+
+networks:
+  mongo-cluster:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 111.222.32.0/24
