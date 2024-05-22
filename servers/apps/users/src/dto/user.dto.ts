@@ -17,6 +17,16 @@ export class RegisterDto {
   @IsNotEmpty()
   @IsEmail()
   email: string
+
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  phoneNumber: string
+
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  address: string
 }
 
 @InputType()
