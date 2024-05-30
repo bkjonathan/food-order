@@ -30,6 +30,19 @@ export class RegisterDto {
 }
 
 @InputType()
+export class ActivationDto {
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  activationToken: string
+
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  activationCode: string
+}
+
+@InputType()
 export class LoginDto {
   @Field()
   @IsNotEmpty()

@@ -31,7 +31,7 @@ model User {
   email       String   @unique
   name        String
   phoneNumber String   @unique @map("phone_number")
-  address     String
+  address     String?
   password    String
   role        Role     @default(USER)
   avatar      Avatar?  @relation(fields: [avatarId], references: [id])
