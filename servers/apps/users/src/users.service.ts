@@ -4,9 +4,10 @@ import { JwtService } from '@nestjs/jwt'
 import { ActivationDto, LoginDto, RegisterDto } from './dto/user.dto'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { Response } from 'express'
-import { hash } from 'bcrypt'
+import { compareSync, hash } from 'bcrypt'
 import { EmailService } from './email/email.service'
 import { User } from '@prisma/client'
+import { TokenSenderService } from './utils/tokenSender.service'
 
 type UserType = Omit<
   User,
@@ -126,14 +127,23 @@ export class UsersService {
 
   async login(payload: LoginDto) {
     const { email, password } = payload
-    const user = {
-      id: '1',
-      name: 'John Doe',
-      email,
-      password: 'password',
-      createdAt: new Date(),
-      updatedAt: new Date()
+
+    const user = await this.prismaService.user.findUnique({
+      where: { email }
+    })
+
+    if (!user) {
+      throw new BadRequestException('User not found')
     }
+    if (!compareSync(password, user.password)) {
+      throw new BadRequestException('Invalid password')
+    }
+
+    const tokenSender = new TokenSenderService(
+      this.configService,
+      this.jwtService
+    )
+    return await tokenSender.sendToken(user)
   }
 
   async getUsers() {

@@ -46,11 +46,11 @@ export class ActivationDto {
 export class LoginDto {
   @Field()
   @IsNotEmpty()
-  @MinLength(8)
-  password: string
+  @IsEmail()
+  email: string
 
   @Field()
   @IsNotEmpty()
-  @IsEmail()
-  email: string
+  @MinLength(8)
+  password: string
 }

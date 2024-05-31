@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { UserResolver } from './user.resolver'
 import { EmailModule } from './email/email.module'
+import { AuthGuard } from './guards/auth.guard'
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { EmailModule } from './email/email.module'
     ConfigService,
     JwtService,
     PrismaService,
-    UserResolver
+    UserResolver,
+    AuthGuard
   ]
 })
 export class UsersModule {}
